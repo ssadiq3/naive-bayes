@@ -4,34 +4,36 @@
 
 namespace naivebayes {
 
-    std::istream& operator>>(std::istream &is, Image &image) {
-        size_t dimension;
+    std::istream &operator>>(std::istream &is, Image &image) {
         std::string block;
-        std::string line;
-        while (std::getline(is, line)) {
-            if (line.length() == 1) {
-                image.class_ = std::stoi(line);
-            } else {
-                image.dimension_ = line.length();
-                block += line;
-            }
-        }
+        std::getline(is, block);
+        image.class_ = (int)(block[0] - '0');
         image.FillPixelsVector(block);
         return is;
     }
 
     void Image::FillPixelsVector(std::string block) {
-        for (size_t k = 1; k < block.length(); k++) {
-            for (size_t i = 0; i < dimension_; i++) {
-                for (size_t j = 0; j < dimension_; j++) {
-                    if (block.at(k) == '#' || block.at(k) == '+') {
-                        image_pixels_[i][j] = 1;
-                    } else {
-                        image_pixels_[i][j] = 0;
-                    }
+        int k = -1;
+        auto vector = std::vector<std::vector<int>>(28, std::vector<int>(28, 0));
+        for (int i = 0; i < 28; i++) {
+            for (int j = 0; j < 28; j++) {
+                k++;
+                if (block.at(k) == '#' || block.at(k) == '+') {
+                    vector[i][j] = 1;
+                } else {
+                    vector[i][j] = 0;
                 }
             }
         }
+        image_pixels_ = vector;
+    }
+
+    void Image::SetDimension(size_t dimension) {
+        dimension_ = dimension;
+    }
+
+    int Image::GetClass() {
+        return class_;
     }
 
 }

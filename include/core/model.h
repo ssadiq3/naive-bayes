@@ -1,10 +1,20 @@
 #include <string>
+#include <vector>
+#include "file.h"
+#include "image.h"
 
 namespace naivebayes {
 
-class Placeholder {
- public:
-  std::string GetBestClass() const;
+class Model {
+public:
+    Model();
+    void CalculatePriors();
+
+private:
+    std::vector<Image> images_;
+    const std::string path_ = "C:\\Users\\User\\Cinder\\cinder_0.9.2_vc2015_\\cinder_0.9.2_vc2015\\my-projects\\Naive Bayes\\trainingimagesandlabels.txt";
+    File file = File(path_);
+    std::vector<float> priors_;
 };
 
 }  // namespace naivebayes

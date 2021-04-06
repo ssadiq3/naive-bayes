@@ -9,6 +9,7 @@ namespace naivebayes {
     class File {
     public:
         File(std::string path);
+        std::vector<Image> GetImages();
 
     private:
         std::vector<naivebayes::Image> images_;
