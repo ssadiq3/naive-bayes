@@ -1,3 +1,5 @@
+#pragma once
+
 #include <string>
 #include <vector>
 #include "file.h"
@@ -8,13 +10,31 @@ namespace naivebayes {
 class Model {
 public:
     Model();
+    Model(std::string path);
     void CalculatePriors();
+    void CalculateFeatures();
+    friend std::istream &operator>>(std::istream &is, Model &model);
+    friend std::ostream &operator<<(std::ostream &os, Model &model);
+    int GetDimension();
 
 private:
     std::vector<Image> images_;
-    const std::string path_ = "C:\\Users\\User\\Cinder\\cinder_0.9.2_vc2015_\\cinder_0.9.2_vc2015\\my-projects\\Naive Bayes\\trainingimagesandlabels.txt";
-    File file = File(path_);
     std::vector<float> priors_;
+    std::vector<std::vector<std::vector<std::vector<float>>>> features_;
+public:
+    const std::vector<float> &GetPriors() const;
+
+    const std::vector<std::vector<std::vector<std::vector<float>>>> &GetFeatures() const;
+
+private:
+    int dimension_;
+    static constexpr int NUM_CATEGORIES_ = 2;
+    static constexpr int NUM_CLASSES_ = 10;
+    static constexpr int K_ = 1;
+    std::vector<int> num_each_class;
+
+
+
 };
 
 }  // namespace naivebayes
