@@ -5,9 +5,9 @@
 
 TEST_CASE("Test dimension for small file") {
     naivebayes::File file =
-    naivebayes::File("C:\\Users\\User\\Cinder\\cinder_0.9.2_vc2015_\\cinder_0.9.2_vc2015\\my-projects\\Naive Bayes\\test_file.txt");
+    naivebayes::File("C:\\Users\\User\\Cinder\\cinder_0.9.2_vc2015_\\cinder_0.9.2_vc2015\\my-projects\\Naive Bayes\\small_file.txt");
     SECTION("Test correct dimension") {
-        REQUIRE(file.GetDimension() == 5);
+        REQUIRE(file.GetDimension() == 7);
     }
 }
 

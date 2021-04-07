@@ -6,6 +6,12 @@ namespace naivebayes {
 
 class Image {
 public:
+    /**
+     * >> Operator used by file to construct image from string stream
+     * @param is input stream
+     * @param image image to be constructed
+     * @return input stream
+     */
     friend std::istream& operator>>(std::istream &is, Image &image);
     int GetClass();
     std::string GetPixelValues();

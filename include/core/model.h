@@ -9,11 +9,36 @@ namespace naivebayes {
 
 class Model {
 public:
+    /**
+     * Default constructor
+     */
     Model();
-    Model(std::string path);
+    /**
+     * Constructor that constructs based off file
+     * @param file file from which model is constructed
+     */
+    Model(File file);
+    /**
+     * Calculates prior probabilities and stores in vector
+     */
     void CalculatePriors();
+    /**
+     * Calculates feature probabilities and stores in vector
+     */
     void CalculateFeatures();
+    /**
+     * >> Operator used to build model from file
+     * @param is istream containing model string
+     * @param model object built from stream
+     * @return istream
+     */
     friend std::istream &operator>>(std::istream &is, Model &model);
+    /**
+     * << Operator used to write model to file
+     * @param os output stream to write to
+     * @param model used for outputting
+     * @return output stream
+     */
     friend std::ostream &operator<<(std::ostream &os, Model &model);
     int GetDimension();
 

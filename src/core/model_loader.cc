@@ -10,6 +10,7 @@ namespace naivebayes {
     Model ModelLoader::WriteToModel() {
         Model model;
         std::ifstream input_file(path_);
+        //Uses operator >> to write from file into the model
         if (input_file.is_open()) {
             input_file >> model;
         }
@@ -18,6 +19,7 @@ namespace naivebayes {
 
     void ModelLoader::WriteToFile(Model model) {
         std::ofstream output_file(path_);
+        //Uses overload operator << to write model into a file
         if (output_file.is_open()) {
             output_file << model;
         }
