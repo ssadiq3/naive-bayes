@@ -7,7 +7,16 @@ namespace naivebayes {
 class Image {
 public:
     Image();
+    /**
+     * An image constructor that constructs using a 2d vector of pixels-used for the sketchpad
+     * @param pixels 2d vector of pixels
+     */
     Image(std::vector<std::vector<char>> pixels);
+    /**
+     * Static method that processes images from a file into a vector of image objects
+     * @param path to the file
+     * @return vector of image objects in file
+     */
     static std::vector<Image> ProcessImagesFromFile(std::string path);
     /**
      * >> Operator used by file to construct image from string stream
@@ -24,8 +33,5 @@ private:
     int class_;
     int dimension_;
     std::vector<std::vector<char>> pixels_;
-
-    //std::vector<std::vector<int>> image_pixels_ = std::vector<std::vector<int>>((int)dimension_, std::vector<int>((int)dimension_, 0));
-    //void FillPixelsVector(std::string block);
     };
 }

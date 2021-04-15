@@ -2,7 +2,6 @@
 
 #include <string>
 #include <vector>
-#include "file.h"
 #include "image.h"
 
 namespace naivebayes {
@@ -19,6 +18,11 @@ public:
      */
     Model(std::vector<Image> images);
 
+    /**
+     * Static method that trains a model using a vector of image objects
+     * @param images vector used for training
+     * @return trained model
+     */
     static Model Train(std::vector<Image> images);
     /**
      * Calculates prior probabilities and stores in vector

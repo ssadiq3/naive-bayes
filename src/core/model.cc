@@ -5,28 +5,8 @@ namespace naivebayes {
 
     Model::Model() {}
 
-    /*Model::Model(std::vector<Image> images) {
-        dimension_ = images[0].GetDimension();
-        //initialize 4d vector for features, set sizes
-        features_ = std::vector<std::vector<std::vector<std::vector<float>>>>
-        (dimension_, std::vector<std::vector<std::vector<float>>>
-        (dimension_, std::vector<std::vector<float>>
-        (NUM_CLASSES_, std::vector<float>(NUM_CATEGORIES_, 0))));
-        //Set model variables from file
-        images_ = images;
-        //dimension_ = file.GetDimension();
-        //Fills vector containing number of each class at class index
-        num_each_class = std::vector<int>(NUM_CLASSES_, 0);
-        for (int i = 0; i < NUM_CLASSES_; i++) {
-            for (Image image : images_) {
-                if (image.GetClass() == i) {
-                    num_each_class[i]++;
-                }
-            }
-        }
-    }*/
-
      Model Model::Train(std::vector<Image> images) {
+        //Create a new model and fill num_each_class vector for feature probabilities
         Model model;
         model.num_each_class = std::vector<int>(NUM_CLASSES_, 0);
         for (int i = 0; i < NUM_CLASSES_; i++) {
@@ -36,11 +16,14 @@ namespace naivebayes {
                 }
             }
         }
+        //Set model dimension to any image's dimension
         model.dimension_ = images[0].GetDimension();
+        //Initialize 4d vector
         model.features_ = std::vector<std::vector<std::vector<std::vector<float>>>>
          (model.dimension_, std::vector<std::vector<std::vector<float>>>
          (model.dimension_, std::vector<std::vector<float>>
          (NUM_CLASSES_, std::vector<float>(NUM_CATEGORIES_, 0))));
+        //Train model by filling priors and features using given set of images
         model.CalculatePriors(images);
         model.CalculateFeatures(images);
         return model;
@@ -58,14 +41,14 @@ namespace naivebayes {
 
         //Count pixels as iterate through string, start at -1 because increment comes before
         //int pixel_count = -1;
-        for (int i = 0; i < dimension_; i++) {
-            for (int j = 0; j < dimension_; j++) {
+        for (int row = 0; row < dimension_; row++) {
+            for (int col = 0; col < dimension_; col++) {
                 //++pixel_count;
                 for (int c = 0; c < NUM_CLASSES_; c++) {
                     for (Image image : images) {
                         if (image.GetClass() == c) {
                             //Check char at this pixel, if space it is unshaded
-                            if (image.GetPixelValues()[i][j] == ' ') {
+                            if (image.GetPixelValues()[row][col] == ' ') {
                                 unshaded_sum++;
                             }
                         }
@@ -73,8 +56,8 @@ namespace naivebayes {
                     //number of shaded is number of class images - unshaded sum
                     int shaded_sum = num_each_class[c] - unshaded_sum;
                     //Set values using Bayes equation
-                    features_[i][j][c][0] = (float)(K_ + unshaded_sum)/(float) ((K_ * NUM_CATEGORIES_) + num_each_class[c]);
-                    features_[i][j][c][1] = (float)(K_ + shaded_sum)/(float) ((K_ * NUM_CATEGORIES_) + num_each_class[c]);
+                    features_[row][col][c][0] = (float)(K_ + unshaded_sum)/(float) ((K_ * NUM_CATEGORIES_) + num_each_class[c]);
+                    features_[row][col][c][1] = (float)(K_ + shaded_sum)/(float) ((K_ * NUM_CATEGORIES_) + num_each_class[c]);
                     unshaded_sum = 0;
                 }
             }
@@ -91,11 +74,11 @@ namespace naivebayes {
         }
 
         //rest of lines are every feature value
-        for (int i = 0; i < model.dimension_; i++) {
-            for (int j = 0; j < model.dimension_; j++) {
+        for (int row = 0; row < model.dimension_; row++) {
+            for (int col = 0; col < model.dimension_; col++) {
                 for (int c = 0; c < model.NUM_CLASSES_; c++) {
                     for (int s = 0; s < model.NUM_CATEGORIES_; s++) {
-                        os << model.features_[i][j][c][s] << std::endl;
+                        os << model.features_[row][col][c][s] << std::endl;
                     }
                 }
             }
@@ -119,13 +102,13 @@ namespace naivebayes {
 
         //rest of lines are features, set remaining lines in features vector
         model.features_ = std::vector<std::vector<std::vector<std::vector<float>>>>(model.dimension_, std::vector<std::vector<std::vector<float>>>(model.dimension_, std::vector<std::vector<float>>(model.NUM_CLASSES_, std::vector<float>(model.NUM_CATEGORIES_, 0))));
-        for (int i = 0; i < model.dimension_; i++) {
-            for (int j = 0; j < model.dimension_; j++) {
+        for (int row = 0; row < model.dimension_; row++) {
+            for (int col = 0; col < model.dimension_; col++) {
                 for (int c = 0; c < model.NUM_CLASSES_; c++) {
                     for (int s = 0; s < model.NUM_CATEGORIES_; s++) {
                         std::string line;
                         std::getline(is, line);
-                        model.features_[i][j][c][s] = std::stof(line);
+                        model.features_[row][col][c][s] = std::stof(line);
                     }
                 }
             }
@@ -142,7 +125,7 @@ namespace naivebayes {
     }
 
     const float &Model::GetFeature(int row, int col, int class_, int shade) const {
-        return features_[row][shade][class_][shade];
+        return features_[row][col][class_][shade];
     }
 
     const int Model::GetNumClasses() {

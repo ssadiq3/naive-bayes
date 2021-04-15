@@ -29,6 +29,7 @@ namespace naivebayes {
                     //create string stream and push back new image with string of image
                     std::istringstream iss(image_string);
                     Image image;
+                    //Set the dimension before creating the image for 2d vector
                     image.dimension_ = dimension;
                     iss >> image;
                     images.push_back(image);

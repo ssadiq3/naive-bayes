@@ -58,7 +58,8 @@ list(APPEND SOURCE_FILES    ${CORE_SOURCE_FILES}
                             src/visualizer/naive_bayes_app.cc
                             src/visualizer/sketchpad.cc)
 
-list(APPEND TEST_FILES tests/test_model.cc
+list(APPEND TEST_FILES  tests/test_main.cc
+                        tests/test_model.cc
                         tests/test_image.cc
                         tests/test_model_loader.cc
                         tests/test_image_classifier.cc)
@@ -76,7 +77,7 @@ ci_make_app(
 ci_make_app(
         APP_NAME        naive-bayes-test
         CINDER_PATH     ${CINDER_PATH}
-        SOURCES tests/test_image_classifier.cc ${SOURCE_FILES} ${TEST_FILES}
+        SOURCES tests/test_main.cc ${SOURCE_FILES} ${TEST_FILES}
         INCLUDES        include
         LIBRARIES       catch2
 )
