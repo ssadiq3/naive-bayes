@@ -10,19 +10,17 @@ namespace naivebayes {
          * Creates model loader file
          * @param path to file for model
          */
-        ModelLoader(std::string path);
+        ModelLoader();
         /**
          * Writes from file into a model
          * @return model that is generated
          */
-        Model WriteToModel();
+        static Model WriteToModel(std::string path);
         /**
          * Writes model to a file
          * @param model which is to be written to file
          */
-        void WriteToFile(Model model);
+        static void WriteToFile(Model model, std::string path);
 
-    private:
-        std::string path_;
     };
 }

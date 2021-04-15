@@ -5,10 +5,16 @@ namespace naivebayes {
 
     Model::Model() {}
 
-    Model::Model(File file) {
+    /*Model::Model(std::vector<Image> images) {
+        dimension_ = images[0].GetDimension();
+        //initialize 4d vector for features, set sizes
+        features_ = std::vector<std::vector<std::vector<std::vector<float>>>>
+        (dimension_, std::vector<std::vector<std::vector<float>>>
+        (dimension_, std::vector<std::vector<float>>
+        (NUM_CLASSES_, std::vector<float>(NUM_CATEGORIES_, 0))));
         //Set model variables from file
-        images_ = file.GetImages();
-        dimension_ = file.GetDimension();
+        images_ = images;
+        //dimension_ = file.GetDimension();
         //Fills vector containing number of each class at class index
         num_each_class = std::vector<int>(NUM_CLASSES_, 0);
         for (int i = 0; i < NUM_CLASSES_; i++) {
@@ -18,40 +24,54 @@ namespace naivebayes {
                 }
             }
         }
+    }*/
+
+     Model Model::Train(std::vector<Image> images) {
+        Model model;
+        model.num_each_class = std::vector<int>(NUM_CLASSES_, 0);
+        for (int i = 0; i < NUM_CLASSES_; i++) {
+            for (Image image : images) {
+                if (image.GetClass() == i) {
+                    model.num_each_class[i]++;
+                }
+            }
+        }
+        model.dimension_ = images[0].GetDimension();
+        model.features_ = std::vector<std::vector<std::vector<std::vector<float>>>>
+         (model.dimension_, std::vector<std::vector<std::vector<float>>>
+         (model.dimension_, std::vector<std::vector<float>>
+         (NUM_CLASSES_, std::vector<float>(NUM_CATEGORIES_, 0))));
+        model.CalculatePriors(images);
+        model.CalculateFeatures(images);
+        return model;
     }
 
-    void Model::CalculatePriors() {
+    void Model::CalculatePriors(std::vector<Image> images) {
         //Use num each class and total image size to add prior probabilities
         for (int i = 0; i < NUM_CLASSES_; i++) {
-            priors_.push_back((float)((K_ + num_each_class[i])/(float)((K_ * NUM_CATEGORIES_) + images_.size())));
+            priors_.push_back((float)((K_ + num_each_class[i])/(float)((K_ * NUM_CATEGORIES_) + images.size())));
         }
     }
 
-    void Model::CalculateFeatures() {
+    void Model::CalculateFeatures(std::vector<Image> images) {
         int unshaded_sum = 0;
-        int shaded_sum = 0;
-        //initialize 4d vector for features, set sizes
-        features_ = std::vector<std::vector<std::vector<std::vector<float>>>>
-        (dimension_, std::vector<std::vector<std::vector<float>>>
-        (dimension_, std::vector<std::vector<float>>
-        (NUM_CLASSES_, std::vector<float>(NUM_CATEGORIES_, 0))));
 
         //Count pixels as iterate through string, start at -1 because increment comes before
-        int pixel_count = -1;
+        //int pixel_count = -1;
         for (int i = 0; i < dimension_; i++) {
             for (int j = 0; j < dimension_; j++) {
-                ++pixel_count;
+                //++pixel_count;
                 for (int c = 0; c < NUM_CLASSES_; c++) {
-                    for (Image image : images_) {
+                    for (Image image : images) {
                         if (image.GetClass() == c) {
                             //Check char at this pixel, if space it is unshaded
-                            if (image.GetPixelValues()[pixel_count] == ' ') {
+                            if (image.GetPixelValues()[i][j] == ' ') {
                                 unshaded_sum++;
                             }
                         }
                     }
                     //number of shaded is number of class images - unshaded sum
-                    int shaded_sum = num_each_class[0] - unshaded_sum;
+                    int shaded_sum = num_each_class[c] - unshaded_sum;
                     //Set values using Bayes equation
                     features_[i][j][c][0] = (float)(K_ + unshaded_sum)/(float) ((K_ * NUM_CATEGORIES_) + num_each_class[c]);
                     features_[i][j][c][1] = (float)(K_ + shaded_sum)/(float) ((K_ * NUM_CATEGORIES_) + num_each_class[c]);
@@ -117,12 +137,16 @@ namespace naivebayes {
         return dimension_;
     }
 
-    const std::vector<float> &Model::GetPriors() const {
-        return priors_;
+    const float &Model::GetPrior(int class_) const {
+        return priors_[class_];
     }
 
-    const std::vector<std::vector<std::vector<std::vector<float>>>> &Model::GetFeatures() const {
-        return features_;
+    const float &Model::GetFeature(int row, int col, int class_, int shade) const {
+        return features_[row][shade][class_][shade];
+    }
+
+    const int Model::GetNumClasses() {
+        return NUM_CLASSES_;
     }
 
 

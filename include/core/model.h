@@ -17,15 +17,17 @@ public:
      * Constructor that constructs based off file
      * @param file file from which model is constructed
      */
-    Model(File file);
+    Model(std::vector<Image> images);
+
+    static Model Train(std::vector<Image> images);
     /**
      * Calculates prior probabilities and stores in vector
      */
-    void CalculatePriors();
+    void CalculatePriors(std::vector<Image> images);
     /**
      * Calculates feature probabilities and stores in vector
      */
-    void CalculateFeatures();
+    void CalculateFeatures(std::vector<Image> images);
     /**
      * >> Operator used to build model from file
      * @param is istream containing model string
@@ -41,20 +43,18 @@ public:
      */
     friend std::ostream &operator<<(std::ostream &os, Model &model);
     int GetDimension();
+    const float &GetPrior(int class_) const;
+    const float &GetFeature(int row, int col, int class_, int shade) const;
+    static const int GetNumClasses();
 
 private:
-    std::vector<Image> images_;
     std::vector<float> priors_;
     std::vector<std::vector<std::vector<std::vector<float>>>> features_;
-public:
-    const std::vector<float> &GetPriors() const;
-
-    const std::vector<std::vector<std::vector<std::vector<float>>>> &GetFeatures() const;
-
-private:
     int dimension_;
     static constexpr int NUM_CATEGORIES_ = 2;
     static constexpr int NUM_CLASSES_ = 10;
+
+private:
     static constexpr int K_ = 1;
     std::vector<int> num_each_class;
 

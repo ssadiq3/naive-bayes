@@ -1,4 +1,6 @@
 #include <visualizer/naive_bayes_app.h>
+#include <core/image_classifier.h>
+#include <core/model_loader.h>
 
 namespace naivebayes {
 
@@ -8,6 +10,9 @@ NaiveBayesApp::NaiveBayesApp()
     : sketchpad_(glm::vec2(kMargin, kMargin), kImageDimension,
                  kWindowSize - 2 * kMargin) {
   ci::app::setWindowSize((int) kWindowSize, (int) kWindowSize);
+    //std::vector<naivebayes::Image> images = naivebayes::Image::ProcessImagesFromFile("C:\\Users\\User\\Cinder\\cinder_0.9.2_vc2015_\\cinder_0.9.2_vc2015\\my-projects\\Naive Bayes\\image-files\\trainingimagesandlabels.txt");
+   model_ = naivebayes::ModelLoader::WriteToModel("C:\\Users\\User\\Cinder\\cinder_0.9.2_vc2015_\\cinder_0.9.2_vc2015\\my-projects\\Naive Bayes\\model-files\\model_file.txt");
+
 }
 
 void NaiveBayesApp::draw() {
@@ -38,6 +43,7 @@ void NaiveBayesApp::keyDown(ci::app::KeyEvent event) {
     case ci::app::KeyEvent::KEY_RETURN:
       // ask your classifier to classify the image that's currently drawn on the
       // sketchpad and update current_prediction_
+      current_prediction_ = ImageClassifier::EvaluateImage(model_, naivebayes::Image(sketchpad_.GetPixelsStatus()));
       break;
 
     case ci::app::KeyEvent::KEY_DELETE:
