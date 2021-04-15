@@ -6,7 +6,7 @@ namespace naivebayes {
     Model::Model() {}
 
      Model Model::Train(std::vector<Image> images) {
-        //Create a new model and fill num_each_class vector for feature probabilities
+        //create a new model and fill num_each_class vector for feature probabilities
         Model model;
         model.num_each_class = std::vector<int>(NUM_CLASSES_, 0);
         for (int i = 0; i < NUM_CLASSES_; i++) {
