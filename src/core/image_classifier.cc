@@ -3,7 +3,7 @@
 namespace naivebayes {
 
     int ImageClassifier::EvaluateImage(Model &model, Image image) {
-        int class_ = 0;
+        int predicted_class = 0;
         //set max to lowest possible value
         double max_prob = -DBL_MAX;
         //iterate through classes, find prior and features for every pixel of this class
@@ -22,12 +22,12 @@ namespace naivebayes {
             }
             //set class to return if temp>max and set new max
             if (temp_prob > max_prob) {
-                class_ = c;
+                predicted_class = c;
                 max_prob = temp_prob;
             }
         }
         //return predicted class
-        return class_;
+        return predicted_class;
     }
 }
 
