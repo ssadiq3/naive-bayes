@@ -49,15 +49,22 @@ get_filename_component(APP_PATH "${CMAKE_CURRENT_SOURCE_DIR}/" ABSOLUTE)
 
 include("${CINDER_PATH}/proj/cmake/modules/cinderMakeApp.cmake")
 
-list(APPEND CORE_SOURCE_FILES src/core/rename_this_file.cc)
+list(APPEND CORE_SOURCE_FILES src/core/model.cc
+                              src/core/image.cc
+                              src/core/model_loader.cc
+                              src/core/image_classifier.cc)
 
 list(APPEND SOURCE_FILES    ${CORE_SOURCE_FILES}
                             src/visualizer/naive_bayes_app.cc
                             src/visualizer/sketchpad.cc)
 
-list(APPEND TEST_FILES tests/rename_this_test_file.cc)
+list(APPEND TEST_FILES  tests/test_main.cc
+                        tests/test_model.cc
+                        tests/test_image.cc
+                        tests/test_model_loader.cc
+                        tests/test_image_classifier.cc)
 
-add_executable(train-model apps/train_model_main.cc ${CORE_SOURCE_FILES})
+add_executable(train-model apps/train_model_main.cc ${CORE_SOURCE_FILES} src/core/image.cc src/core/model.cc src/core/model_loader.cc src/core/image_classifier.cc)
 target_include_directories(train-model PRIVATE include)
 
 ci_make_app(
@@ -70,7 +77,7 @@ ci_make_app(
 ci_make_app(
         APP_NAME        naive-bayes-test
         CINDER_PATH     ${CINDER_PATH}
-        SOURCES         tests/test_main.cc ${SOURCE_FILES} ${TEST_FILES}
+        SOURCES tests/test_main.cc ${SOURCE_FILES} ${TEST_FILES}
         INCLUDES        include
         LIBRARIES       catch2
 )
